@@ -326,25 +326,34 @@
 }
 
 - (BOOL)canPerformAction:(SEL)action withSender:(id)sender {
-	RichTextEditorFeature features = [self featuresEnabledForRichTextEditorToolbar];
-	
-	if ([self.dataSource respondsToSelector:@selector(shouldDisplayRichTextOptionsInMenuControllerForRichTextEditor:)] &&
-		[self.dataSource shouldDisplayRichTextOptionsInMenuControllerForRichTextEditor:self]) {
-		if (action == @selector(richTextEditorToolbarDidSelectBold) && (features & RichTextEditorFeatureBold  || features & RichTextEditorFeatureAll))
-			return YES;
-		if (action == @selector(richTextEditorToolbarDidSelectItalic) && (features & RichTextEditorFeatureItalic  || features & RichTextEditorFeatureAll))
-			return YES;
-		if (action == @selector(richTextEditorToolbarDidSelectUnderline) && (features & RichTextEditorFeatureUnderline  || features & RichTextEditorFeatureAll))
-			return YES;
-		if (action == @selector(richTextEditorToolbarDidSelectStrikeThrough) && (features & RichTextEditorFeatureStrikeThrough  || features & RichTextEditorFeatureAll))
-			return YES;
-	}
-	
-	if (action == @selector(selectParagraph:) && self.selectedRange.length > 0)
-		return YES;
-	
-	return [super canPerformAction:action withSender:sender];
+    RichTextEditorFeature features = [self featuresEnabledForRichTextEditorToolbar];
+    
+    if (action == @selector(richTextEditorToolbarDidSelectBold)) {
+        return ([self.dataSource respondsToSelector:@selector(shouldDisplayRichTextOptionsInMenuControllerForRichTextEditor:)] &&
+                [self.dataSource shouldDisplayRichTextOptionsInMenuControllerForRichTextEditor:self]) && (features & RichTextEditorFeatureBold || features & RichTextEditorFeatureAll) && self.isEditable;
+    }
+    
+    if (action == @selector(richTextEditorToolbarDidSelectItalic)) {
+        return ([self.dataSource respondsToSelector:@selector(shouldDisplayRichTextOptionsInMenuControllerForRichTextEditor:)] &&
+                [self.dataSource shouldDisplayRichTextOptionsInMenuControllerForRichTextEditor:self])  && (features & RichTextEditorFeatureItalic || features & RichTextEditorFeatureAll) && self.isEditable;
+    }
+    
+    if (action == @selector(richTextEditorToolbarDidSelectUnderline)) {
+        return ([self.dataSource respondsToSelector:@selector(shouldDisplayRichTextOptionsInMenuControllerForRichTextEditor:)] &&
+                [self.dataSource shouldDisplayRichTextOptionsInMenuControllerForRichTextEditor:self])  && (features & RichTextEditorFeatureUnderline || features & RichTextEditorFeatureAll) && self.isEditable;
+    }
+    
+    if (action == @selector(richTextEditorToolbarDidSelectStrikeThrough)) {
+        return ([self.dataSource respondsToSelector:@selector(shouldDisplayRichTextOptionsInMenuControllerForRichTextEditor:)] &&
+                [self.dataSource shouldDisplayRichTextOptionsInMenuControllerForRichTextEditor:self]) && (features & RichTextEditorFeatureStrikeThrough || features & RichTextEditorFeatureAll) && self.isEditable;
+    }
+    
+    if (action == @selector(selectParagraph:) && self.selectedRange.length > 0)
+        return YES;
+    
+    return [super canPerformAction:action withSender:sender];
 }
+
 
 - (void)setAttributedText:(NSAttributedString *)attributedText {
 	[super setAttributedText:attributedText];
@@ -360,6 +369,15 @@
 	[super setFont:font];
 	[self updateToolbarState];
 }
+
+//- (void)setEditable:(BOOL)editable {
+//    if(editable) {
+//        [self setupMenuItems];
+//    }else {
+//        [[UIMenuController sharedMenuController] setMenuItems:@[]];
+//
+//    }
+//}
 
 #pragma mark - MenuController Methods -
 
