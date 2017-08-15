@@ -797,9 +797,7 @@
 	[self.textStorage insertAttributedString:attributedStringAttachment atIndex:self.selectedRange.location];
 	[self.textStorage addAttributes:previousAttributes range:NSMakeRange(self.selectedRange.location, 1)];
 	[self.textStorage endEditing];
-    if (self.delegate_interceptor.receiver && [self.delegate_interceptor.receiver respondsToSelector:@selector(textViewDidChange:)]) {
-        [self.delegate_interceptor.receiver textViewDidChange:self];
-    }
+    [self sendDelegateTVChanged];
 }
 
 - (UIViewController <RichTextEditorColorPicker> *)colorPickerForRichTextEditorToolbarWithAction:(RichTextEditorColorPickerAction)action {
